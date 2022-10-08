@@ -1,51 +1,36 @@
 import "./styles/main.css"
 import { PlusCircle } from "phosphor-react"
+import { v4 as uuidV4} from "uuid"
 
 import logoImg from "./assets/logo.svg"
 import { ListEmpty } from "./components/ListEmpty"
 import { Post } from "./components/Posts"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { CheckedState } from "@radix-ui/react-checkbox"
 
 export interface PostProps{
-  id: number
+  id: string
   title: string
   isComplete: boolean | CheckedState
 }
 
 
-const posts: PostProps[] = [
-  {
-    id: 1,
-    title: "Finalizar ToDo List",
-    isComplete: false
-  },
-  {
-    id: 2,
-    title: "Subir Projetos no Github",
-    isComplete: false
-  },
-  {
-    id: 3,
-    title: "Estudar matéria de cálculo",
-    isComplete: false
-  }
-]
 
 
 export function App() {
-  const [listPost, setListPost] = useState(posts)
+  const [listPost, setListPost] = useState<PostProps[]>([])
   const [ newPost, setNewPost] = useState("")
   const [tasksCountDone, setTasksCountDone] = useState(0)
 
  
-  function handleDeletePost(id: number){
+  function handleDeletePost(id: string){
     let newList = listPost.filter(item => item.id !== id)
 
     setListPost(newList)
+    setTasksCountDone(tasksCountDone - 1)
   } 
 
-  function handleCompletePost(state: CheckedState, id: number){
+  function handleCompletePost(state: CheckedState, id: string){
       let newList = listPost
 
       newList.map(post => {
@@ -60,12 +45,13 @@ export function App() {
 
   function handleNewPost(){
     const newTodo = {
-      id: 4,
+      id: uuidV4(),
       title: newPost,
       isComplete: false
     }
 
     setListPost(prev => [newTodo, ...prev])
+    setNewPost("")
   }
 
 
@@ -83,6 +69,7 @@ export function App() {
             <div className="mt-[3.31rem] flex items-center">
               <input 
               type="text" 
+              value={newPost}
               placeholder="Adicione uma nova tarefa"
               onChange={e => setNewPost(e.target.value)}
               className="flex-1 text-[#f2f2f2] rounded-lg bg-[#262626] h-[3.375rem] p-4 placeholder:text-[#808080] border-[#0D0D0D] border-2 outline-none focus:outline-2 focus:outline-[#5E60CE]"
@@ -122,8 +109,11 @@ export function App() {
 
               <main className="mt-6">
 
+
+            
+
                 {
-                  listPost.map(item =>  <Post key={item.id} item={item} onDeletePost={handleDeletePost}  onCompletePost={handleCompletePost}/>)
+                  listPost.length === 0 ? <ListEmpty/> : listPost.map(item =>  <Post key={item.id} item={item} onDeletePost={handleDeletePost}  onCompletePost={handleCompletePost}/>)
                 }
                 
                 

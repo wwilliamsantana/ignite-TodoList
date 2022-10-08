@@ -5,8 +5,8 @@ import { PostProps } from '../App';
 
 interface Props {
   item: PostProps
-  onDeletePost: (id: number) => void
-  onCompletePost: (state: Checkbox.CheckedState, id: number) => void
+  onDeletePost: (id: string) => void
+  onCompletePost: (state: Checkbox.CheckedState, id: string) => void
 }
 
 
